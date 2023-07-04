@@ -1,0 +1,19 @@
+This repository is a project to make a Discord Bot that acts as a Text-Bot so users can query for different quotes in a given book. 
+
+Tech-Stack: Discord.js, Node.js, Python, MongoDB, ElasticSearch
+
+Libraries:
+beautifulsoup4==4.12.2
+dnspython==2.3.0
+EbookLib==0.18
+lxml==4.9.2
+pymongo==4.4.0
+python-dateutil==2.8.2
+python-dotenv==1.0.0
+six==1.16.0
+soupsieve==2.4.1
+
+Parser: This a program to parse through a given epub and add it to MongoDB where every paragraph is a document. You will have to specify the file-path of the document in conversions.py and which encoding style you want to parse through (currently set to windows-1252). A requirements.txt file is provided to list all the necessary Python imports for your virtual environment to make conversions.py work. The environment variable not pushed to github is the MONGO_URL to specify the Mongo Cluster the book data will be sent to. To use Parser, activate your virtual environment and run conversion.py with "python conversion.py". 
+
+Bot: To Be Added
+
