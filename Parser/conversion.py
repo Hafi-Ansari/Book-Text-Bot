@@ -37,29 +37,30 @@ def parse_epub(epub_file):
 
 
 def insert_chapters_into_db(chapters, book_title):
-    for i, chapter in enumerate(chapters):
+    chapter_number = 1
+    for chapter in chapters[7:53]:
         paragraphs = chapter.split("\n")
+        word_count = sum(len(paragraph.split()) for paragraph in paragraphs)
+        
+        # Ignore chapters that don't have at least 100 words
+        if word_count < 100:
+            continue
         
         for paragraph in paragraphs:
             if paragraph.strip() != "":
                 doc = {
                     "_id": ObjectId(),
                     "book_title": book_title,
-                    "chapter_number": i + 1,
+                    "chapter_number": chapter_number,
                     "text": paragraph.strip(),
                 }
-                
-                #collection.insert_one(doc)
-                print(doc)
+        chapter_number += 1
+
+
 
 chapters = parse_epub(epub_file)
 
-with open("example.txt", "a") as file:
-    # Write the content to the file
-    file.write(chapters[53])
-
-# Confirm that the content has been inserted
-print("Content inserted successfully.")
+insert_chapters_into_db(chapters, "Red Rising")
 
 
 
