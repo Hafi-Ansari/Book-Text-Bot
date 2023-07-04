@@ -1,6 +1,5 @@
 import os
 import ebooklib
-import bs4
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from ebooklib import epub
@@ -14,10 +13,10 @@ load_dotenv()
 # chapters[7] starts Red Rising, chapters[53] ends it
 epub_file = "Red-Rising.epub"
 
-url = os.getenv("MONGO_URL")
-client = MongoClient(url)
+connection_string = os.getenv("MONGO_URL")
+client = MongoClient(connection_string)
 db = client['Red-Rising-Series']
-collection = db['Books']
+collection = db['Red Rising']
 
 def parse_epub(epub_file):
     book = epub.read_epub(epub_file)
@@ -54,6 +53,8 @@ def insert_chapters_into_db(chapters, book_title):
                     "chapter_number": chapter_number,
                     "text": paragraph.strip(),
                 }
+                collection.insert_one(doc)
+
         chapter_number += 1
 
 
