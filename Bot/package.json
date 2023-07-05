@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1"
+    "@elastic/elasticsearch": "^7.17.11-patch.1",
+    "dotenv": "^16.3.1",
+    "mongodb": "^5.6.0"
   }
 }
