@@ -11,47 +11,79 @@ const client = new Client({
   },
 });
 
-async function search(query) {
-    // Attempt a match_phrase query first
-    let { body } = await client.search({
-      index: "new-search-text",
-      body: {
-        query: {
-          match_phrase: { text: query }, // This will look for the exact phrase in the 'text' field
-        },
+async function phraseSearch(query) {
+  let { body } = await client.search({
+    index: "new-search-text",
+    body: {
+      query: {
+        match_phrase: { text: query },
       },
-    });
-  
-    let results = ["Exact Matches:", body.hits.hits];
-  
-    // If no results were found with the match_phrase query, perform a fuzzy match query
-    if (results[1].length === 0) {
-      const { body } = await client.search({
-        index: "new-search-text",
-        body: {
-          query: {
-            match: {
-              text: {
-                query: query,
-                fuzziness: "AUTO", // This will look for fuzzy matches in the 'text' field
-              },
-            },
+      sort: [{ order: "asc" }],
+    },
+  });
+
+  return body.hits.hits;
+}
+
+async function fuzzySearch(query) {
+  const { body } = await client.search({
+    index: "new-search-text",
+    body: {
+      query: {
+        match: {
+          text: {
+            query: query,
+            operator: "and",
+            fuzziness: "AUTO",
           },
         },
-      });
-  
-      results = ["Couldn't Find Exact Matches. Here are some similar results:", body.hits.hits];
-    }
-  
-    return results;
-  }
-  
-  // Now you can use the search function like this:
-  search("HellDiver")
-    .then((results) => {
-      // Do something with the search results
-      console.log(results[0]);
-      console.log(results[1])
-    })
-    .catch(console.log);
-  
+      },
+      sort: [
+        { order: "asc" }, // This will sort the results in ascending order based on the 'order' field
+      ],
+    },
+  });
+
+  let results = body.hits.hits;
+  return results;
+}
+
+async function fullTextSearch(query) {
+  let { body } = await client.search({
+    index: "new-search-text",
+    body: {
+      query: {
+        match: { text: query },
+      },
+      sort: [{ order: "asc" }],
+    },
+  });
+
+  return body.hits.hits;
+}
+
+async function proximitySearch(query) {
+  let { body } = await client.search({
+    index: "new-search-text",
+    body: {
+      query: {
+        match_phrase: {
+          text: {
+            query: query,
+            slop: 10, // This is the maximum distance between words allowed. Adjust according to your needs.
+          },
+        },
+      },
+      sort: [{ order: "asc" }],
+    },
+  });
+
+  return body.hits.hits;
+}
+
+module.exports = {
+  phraseSearch,
+  fuzzySearch,
+  proximitySearch,
+  fullTextSearch,
+};
