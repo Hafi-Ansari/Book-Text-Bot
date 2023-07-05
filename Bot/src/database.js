@@ -19,6 +19,7 @@ async function phraseSearch(query) {
         match_phrase: { text: query },
       },
       sort: [{ order: "asc" }],
+      size: 100
     },
   });
 

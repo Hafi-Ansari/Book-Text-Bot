@@ -1,4 +1,6 @@
 require("dotenv").config();
+const fs = require("fs");
+
 const {
   phraseSearch,
   fuzzySearch,
@@ -37,13 +39,50 @@ Client.on("messageCreate", (message) => {
   }
 
   let userInput = message.content;
+
   phraseSearch(userInput)
     .then((results) => {
-      // Extract the 'text' from each result and join them with a newline
-      const resultTexts = results
-        .map((result) => result._source.text)
-        .join("\n\n");
-      message.reply(resultTexts);
+      if (results.length === 100) {
+        message.channel.send("Too many results. Try something more specific.");
+        return;
+      }
+
+      let resultTexts = results.map((result) => {
+        let source = result._source;
+        return `Book: ${source.book_title}, Chapter: ${source.chapter_number}\n${source.text}`;
+      });
+
+      let joinedTexts = resultTexts.join("\n\n");
+
+      if (joinedTexts.length > 2000) {
+        fs.writeFile("results.txt", joinedTexts, function (err) {
+          if (err) throw err;
+
+          message.channel
+            .send({
+              files: [
+                {
+                  attachment: "results.txt",
+                  name: "results.txt",
+                },
+              ],
+            })
+            .then(() => {
+              // after sending the file
+              fs.unlink("./results.txt", (err) => {
+                if (err) {
+                  console.error("Error deleting file:", err);
+                  return;
+                }
+              });
+            })
+            .catch((error) => {
+              console.error("Error sending file:", error);
+            });
+        });
+      } else {
+        message.reply(joinedTexts);
+      }
     })
     .catch((error) => {
       console.error("Error during search:", error);
@@ -52,4 +91,3 @@ Client.on("messageCreate", (message) => {
 });
 
 Client.login(discordToken);
-
