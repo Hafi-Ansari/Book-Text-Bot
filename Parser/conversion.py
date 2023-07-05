@@ -38,7 +38,7 @@ def parse_epub(epub_file):
 def insert_chapters_into_db(chapters, book_title):
     chapter_number = 1
     curr = 1 
-    for chapter in chapters[7:53]:
+    for chapter in chapters[7:54]:
         paragraphs = chapter.split("\n")
         word_count = sum(len(paragraph.split()) for paragraph in paragraphs)
         

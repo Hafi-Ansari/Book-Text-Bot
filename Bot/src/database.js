@@ -13,7 +13,7 @@ const client = new Client({
 
 async function phraseSearch(query) {
   let { body } = await client.search({
-    index: "new-search-text",
+    index: "bot-search-text",
     body: {
       query: {
         match_phrase: { text: query },
@@ -27,7 +27,7 @@ async function phraseSearch(query) {
 
 async function fuzzySearch(query) {
   const { body } = await client.search({
-    index: "new-search-text",
+    index: "bot-search-text",
     body: {
       query: {
         match: {
@@ -50,7 +50,7 @@ async function fuzzySearch(query) {
 
 async function fullTextSearch(query) {
   let { body } = await client.search({
-    index: "new-search-text",
+    index: "bot-search-text",
     body: {
       query: {
         match: { text: query },
@@ -64,7 +64,7 @@ async function fullTextSearch(query) {
 
 async function proximitySearch(query) {
   let { body } = await client.search({
-    index: "new-search-text",
+    index: "bot-search-text",
     body: {
       query: {
         match_phrase: {

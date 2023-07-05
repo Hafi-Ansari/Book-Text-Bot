@@ -14,7 +14,7 @@ const client = new Client({
 async function createIndexWithNewMapping() {
   try {
     await client.indices.create({
-      index: 'new-search-text',
+      index: 'bot-search-text',
       body: {
         mappings: {
           properties: {
@@ -40,7 +40,7 @@ async function reindexData() {
           index: 'search-text'
         },
         dest: {
-          index: 'new-search-text'
+          index: 'bot-search-text'
         }
       }
     });
