@@ -1,5 +1,6 @@
 // deploy-commands.js
 
+const fs = require('fs');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require("dotenv").config({ path: "../.env" });
@@ -8,9 +9,11 @@ const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
 const token = process.env.DISCORD_TOKEN;
 
-const commands = require('./commands/commands');
+// Dynamically import all command files
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const commands = commandFiles.map(file => require(`./commands/${file}`));
 
-const commandsData = Object.values(commands).map(command => command.data.toJSON());
+const commandsData = commands.map(command => command.data.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(token);
 
