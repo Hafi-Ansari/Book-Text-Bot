@@ -1,5 +1,6 @@
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 const fs = require("fs");
+const commands = require('./commands/commands');
 
 const {
   phraseSearch,
@@ -7,9 +8,10 @@ const {
   proximitySearch,
   fullTextSearch,
 } = require("./database");
+
 const Discord = require("discord.js");
 
-const discordToken = process.env.DISCORD_RPS_TOKEN;
+const discordToken = process.env.DISCORD_TOKEN;
 
 const Client = new Discord.Client({
   intents: [
@@ -81,13 +83,30 @@ Client.on("messageCreate", (message) => {
             });
         });
       } else {
-        message.reply(joinedTexts);
+        message.send(joinedTexts);
       }
     })
     .catch((error) => {
       console.error("Error during search:", error);
       message.reply("Sorry, something went wrong with your search.");
     });
+});
+
+
+
+Client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
+
+  const command = commands[interaction.commandName];
+
+  if (!command) return;
+
+  try {
+      await command.execute(interaction);
+  } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+  }
 });
 
 Client.login(discordToken);
