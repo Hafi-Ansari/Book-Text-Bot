@@ -1,4 +1,4 @@
-This repository is a project to make a Discord Bot that acts as a Text-Bot so users can query for different quotes in a given book. 
+This repository is a project to make a Discord Bot that acts as a search engine so users can query for different quotes in a given book. 
 
 Tech-Stack: Discord.js, Node.js, Python, MongoDB, ElasticSearch, Elastic Cloud
 
@@ -21,8 +21,18 @@ Node.js:
   "dotenv": "^16.3.1",
   "mongodb": "^5.6.0"
 
-Parser: This a program to parse through a given epub and add it to MongoDB where every paragraph is a document. You will have to specify the file-path of the document in conversions.py and which encoding style you want to parse through (currently set to windows-1252). A requirements.txt file is provided to list all the necessary Python imports for your virtual environment to make conversions.py work. The environment variable not pushed to github is the MONGO_URL to specify the Mongo Cluster the book data will be sent to. To use Parser, activate your virtual environment and run conversion.py with "python conversion.py". 
+Parser: This a program to parse through a given epub to add it to MongoDB where every paragraph is a document. You will have to specify the file-path of the document in conversions.py and which encoding style you want to parse through (currently set to windows-1252). A requirements.txt file is provided to list all the necessary Python imports for your virtual environment to make conversions.py work. The environment variable not pushed to github is the MONGO_URL to specify the Mongo Cluster the book data will be sent to. To use Parser, activate your virtual environment and run conversion.py with "python conversion.py". 
 
-Bot: Connect with Elastic Cloud using database.js and perform queries to data indexed to ElasticSearch. Requires the npm @elastic/elasticsearch library as well as Elastic auth. Performs full-text search as well as fuzzy search.
+Bot: Those folder project connects with Elastic Cloud and creates a Discord Bot that performs user queries to data indexed to ElasticSearch. 
+  - database.js: This file connects with the Elastic Cloud client and has the functions to perform Phrase Searching, Full-Text Searching, Fuzzy 
+      Searching, and Proximity Searching. Each search function allows a maximum of 100 document results (maximum before pagination in Elastic Indexes). If the number of documents exceeds this number, a simple "Too many results. Try something more specific." is sent as a response on Discord. All responses are sorted in ascending order based off of "Order" (holds which paragraph number it is in the book series). Requires the npm @elastic/elasticsearch library. 
+  - bot.js: This file creates an instance of the Discord Bot. Also dynamically creates the slash command options (one for each type of search).
+      Requires discord.js. 
+  - deploy-commands.js: File that interacts with the Discord Rest API to map each command to a guild's commands for the bot. Use after every 
+      change to the command. 
+  - commands folder js files: each js file inside the commands folder is a command that is exported into bot.js. 
+  - reindex.js: This file makes a copy of the index instance synced to the MongoDB database with the customized map properties the user requires.
+
+Not In Repository: You will have to use either ElasticSearch or Elastic Cloud to connect with your MongoDB database to index everything yourself. On Elastic Cloud, good practice is to sync one index instance with MongoDB, and create another index instance that maps to the specific properties you desire. 
 
 

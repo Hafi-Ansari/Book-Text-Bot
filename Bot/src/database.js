@@ -40,8 +40,9 @@ async function fuzzySearch(query) {
         },
       },
       sort: [
-        { order: "asc" }, // This will sort the results in ascending order based on the 'order' field
+        { order: "asc" }, 
       ],
+      size: 100
     },
   });
 
@@ -57,6 +58,7 @@ async function fullTextSearch(query) {
         match: { text: query },
       },
       sort: [{ order: "asc" }],
+      size: 100
     },
   });
 
@@ -71,11 +73,12 @@ async function proximitySearch(query) {
         match_phrase: {
           text: {
             query: query,
-            slop: 10, // This is the maximum distance between words allowed. Adjust according to your needs.
+            slop: 10, 
           },
         },
       },
       sort: [{ order: "asc" }],
+      size: 100
     },
   });
 
